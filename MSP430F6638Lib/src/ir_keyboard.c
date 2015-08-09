@@ -1,9 +1,9 @@
-/* 
+ï»¿/* 
 * @FileName: ir_keyboard.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
-* @Description: ÎŞÏßºìÍâÒ£¿Ø¼üÅÌÇı¶¯£¬Ö»ÒªÊÇºìÍâÒ£¿ØĞÅºÅ£¬¸ÃÄ£¿éÉÔ¼ÓĞŞ¸Ä¼´ÄÜ¼æÈİ
-*               Ö÷ÒªĞèÒª¿¼ÂÇµÄÊÇÕë¶Ô²»Í¬Ò£¿ØÆ÷µÄ ĞÅºÅÈİ²î£¨DIF£©ºÍ²»Í¬°´¼üµÄ±àÂë¿ÉÄÜ²»Ò»ÖÂ
+* @Description: æ— çº¿çº¢å¤–é¥æ§é”®ç›˜é©±åŠ¨ï¼Œåªè¦æ˜¯çº¢å¤–é¥æ§ä¿¡å·ï¼Œè¯¥æ¨¡å—ç¨åŠ ä¿®æ”¹å³èƒ½å…¼å®¹
+*               ä¸»è¦éœ€è¦è€ƒè™‘çš„æ˜¯é’ˆå¯¹ä¸åŒé¥æ§å™¨çš„ ä¿¡å·å®¹å·®ï¼ˆDIFï¼‰å’Œä¸åŒæŒ‰é”®çš„ç¼–ç å¯èƒ½ä¸ä¸€è‡´
 * @Modified by  |  Modified time  |  Description 
 *  
 */
@@ -20,17 +20,17 @@ static unsigned char g_ucIRCnt;
 static unsigned char g_ucClickCnt = 0;
 static unsigned char g_ucCurKey = 0;
 static int g_iIRValue;
-//static unsigned char g_ucCnt = 0;          // ¼ÆÊıÊäÈëÊı×ÖµÄÎ»Êı
+//static unsigned char g_ucCnt = 0;          // è®¡æ•°è¾“å…¥æ•°å­—çš„ä½æ•°
 
 // Extern parameters for other modules to use this IR moudle
-unsigned long  g_ulGetNum = 0;       // ÓÃÓÚÍ¨¹ıÎŞÏŞÒ£¿Ø»ñµÃÊı×ÖÊäÈë£¬·¶Î§Îª0-65535
-unsigned char g_ucGetNumFlag = 0;    // ÓÃÓÚÈ·ÈÏÓÃ»§ÊäÈëÍê³É£¬²¢ÇÒÊäÈëÓĞĞ§·¶Î§µÄÊı×Ö
+unsigned long  g_ulGetNum = 0;       // ç”¨äºé€šè¿‡æ— é™é¥æ§è·å¾—æ•°å­—è¾“å…¥ï¼ŒèŒƒå›´ä¸º0-65535
+unsigned char g_ucGetNumFlag = 0;    // ç”¨äºç¡®è®¤ç”¨æˆ·è¾“å…¥å®Œæˆï¼Œå¹¶ä¸”è¾“å…¥æœ‰æ•ˆèŒƒå›´çš„æ•°å­—
 
 void IrInit(void)
 {
-	//TA0Ê±ÖÓÔ´ÎªACLK-32kHz£¬¹¤×÷ÔÚÁ¬ĞøÄ£Ê½£¬ÇåÁã£¬ÖĞ¶ÏÊ¹ÄÜ
+	//TA0æ—¶é’Ÿæºä¸ºACLK-32kHzï¼Œå·¥ä½œåœ¨è¿ç»­æ¨¡å¼ï¼Œæ¸…é›¶ï¼Œä¸­æ–­ä½¿èƒ½
 	TA0CTL = TASSEL__ACLK + MC__CONTINOUS + TACLR;
-	//²¶»ñÏÂ½µÑØ£¬²¶»ñCCI1_B£¬²¶»ñÄ£Ê½£¬ÖĞ¶ÏÊ¹ÄÜ
+	//æ•è·ä¸‹é™æ²¿ï¼Œæ•è·CCI1_Bï¼Œæ•è·æ¨¡å¼ï¼Œä¸­æ–­ä½¿èƒ½
 	TA0CCTL1 = CM_2 +CCIS_1+CAP+CCIE;
 
 	P1SEL |= BIT6;
@@ -188,25 +188,25 @@ __interrupt void TIMER0_A1_ISR(void)
 
 		  if(IR_WAITING == g_iIRStatus){
 			  if(IrJudge(cap_dif, IR_PREAMBLE)){
-				  //Ç°µ¼Âë£¬×¼±¸½ÓÊÕÊı¾İ
+				  //å‰å¯¼ç ï¼Œå‡†å¤‡æ¥æ”¶æ•°æ®
 				  g_iIRStatus = IR_RECIEVING;
 				  g_ucIRCnt = 0;
 			  }
 			  else if(IrJudge(cap_dif, IR_CONTINUE)){
-				  //Á¬ĞøÂë£¬ÊÕµ½ºÍÇ°ÃæÒ»ÖÂµÄÊı¾İ
+				  //è¿ç»­ç ï¼Œæ”¶åˆ°å’Œå‰é¢ä¸€è‡´çš„æ•°æ®
 				  //g_ulIrValue = g_ulIrValueCache;
 				  g_ucIRCnt = 0;
 			  }
 		  }
 		  else if(IR_RECIEVING == g_iIRStatus){
-			  //ÅĞ¶ÏÊÇ0»¹ÊÇ1
+			  //åˆ¤æ–­æ˜¯0è¿˜æ˜¯1
 			  ++g_ucIRCnt;
 			  if(IrJudge(cap_dif, IR_H)){
-				  //ÊÕµ½ 1
+				  //æ”¶åˆ° 1
 				  g_ulIrValueCache = (g_ulIrValueCache << 1) + 1;
 			  }
 			  else if(IrJudge(cap_dif, IR_L)){
-				  //ÊÕµ½ 0
+				  //æ”¶åˆ° 0
 				  g_ulIrValueCache <<= 1;
 			  }
 			  else{

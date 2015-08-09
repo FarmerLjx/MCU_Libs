@@ -1,4 +1,4 @@
-/* 
+﻿/* 
 * @FileName: peripheral.h
 * @Author  : PeeNut
 * @Date    : 2015-08-08 20:43:58

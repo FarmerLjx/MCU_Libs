@@ -1,16 +1,16 @@
-/* 
+ï»¿/* 
 * @FileName: i2c.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
-* @Description: i2cµÄÇı¶¯£¬±¾À´Ò²ÊÇÒÆÖ²×ÔÖ®Ç°pic¶ÁĞ´eepromµÄ´úÂë£¬Ğ­ÒéÊµÏÖ±È½ÏÍêÉÆ
-*               Õë¶Ô²»Í¬Æ÷¼ş£¨eeprom¡¢TMP112µÈ£©ÉÔÎ¢ĞŞ¸Ä¶ÁĞ´µØÖ·ºÍÑÓÊ±¼´ÄÜÊµÏÖ¼æÈİ
+* @Description: i2cçš„é©±åŠ¨ï¼Œæœ¬æ¥ä¹Ÿæ˜¯ç§»æ¤è‡ªä¹‹å‰picè¯»å†™eepromçš„ä»£ç ï¼Œåè®®å®ç°æ¯”è¾ƒå®Œå–„
+*               é’ˆå¯¹ä¸åŒå™¨ä»¶ï¼ˆeepromã€TMP112ç­‰ï¼‰ç¨å¾®ä¿®æ”¹è¯»å†™åœ°å€å’Œå»¶æ—¶å³èƒ½å®ç°å…¼å®¹
 * @Modified by  |  Modified time  |  Description 
 *  
 */
 
 #include "../inc/i2c.h"
 
-//P9.2¡¢P9.3 as I2C's SDA and SCL for I2C
+//P9.2ã€P9.3 as I2C's SDA and SCL for I2C
 #define  I2C_SDA_V  (P3IN & BIT1)       //SDA as input's value
 #define  I2C_SDA_I  (P3DIR &= ~BIT1)    //P3.1 as SDA in input
 #define  I2C_SDA_O  (P3DIR |= BIT1)     //P3.1 as SDA in output
@@ -25,7 +25,7 @@
 #define  SCL_PULLUP (P3REN |= BIT0)
 
 
-/*µØÖ·¡¢¶ÁĞ´²Ù×÷¶¨Òå*/
+/*åœ°å€ã€è¯»å†™æ“ä½œå®šä¹‰*/
 #define OP_WRITE 0x90
 #define OP_READ  0x91
 
@@ -34,63 +34,63 @@ int ack_count_w = 0;
 int ack_count_r = 0;
 
 
-/*ÑÓÊ±×Ó³ÌĞò£ºÓÃÔÚI2CĞ­ÒéÍê³É¶Á²Ù×÷ºó*/
+/*å»¶æ—¶å­ç¨‹åºï¼šç”¨åœ¨I2Cåè®®å®Œæˆè¯»æ“ä½œå*/
 void usr_delay()
 {
     int i;
-	i = 100;   //25MHzÊ±Îª4ms
+	i = 100;   //25MHzæ—¶ä¸º4ms
 	while(--i);
 }
 
-/*¿ªÊ¼ĞÅºÅ£ºÊ±ÖÓĞÅºÅÎª¸ßÆÚ¼ä£¬½«SDAÀ­µÍÎª¿ªÊ¼ĞÅºÅ*/
+/*å¼€å§‹ä¿¡å·ï¼šæ—¶é’Ÿä¿¡å·ä¸ºé«˜æœŸé—´ï¼Œå°†SDAæ‹‰ä½ä¸ºå¼€å§‹ä¿¡å·*/
 void i2c_start()
 {
 	//SDA_PULLUP;
 	//SCL_PULLUP;
-	I2C_SDA_O;      //ÉèÖÃÎªÊä³ö
+	I2C_SDA_O;      //è®¾ç½®ä¸ºè¾“å‡º
 	I2C_SCL_O;
-	I2C_SCL_L;      //SCLÀ­µÍ,TMP112ÊÍ·Å×ÜÏß£¬µÈ´ı¿ªÊ¼ĞÅºÅ£¬SCLÆµÂÊ²»ÄÜµÍÓÚ1KHz£¬·ñÔòTMP112½«»á¸´Î»×ÜÏß
+	I2C_SCL_L;      //SCLæ‹‰ä½,TMP112é‡Šæ”¾æ€»çº¿ï¼Œç­‰å¾…å¼€å§‹ä¿¡å·ï¼ŒSCLé¢‘ç‡ä¸èƒ½ä½äº1KHzï¼Œå¦åˆ™TMP112å°†ä¼šå¤ä½æ€»çº¿
     _nop();_nop();
     I2C_SDA_H;
 	_nop(); _nop(); _nop();
 	I2C_SCL_H;
 	_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();
 	I2C_SDA_L;
-	_nop();_nop();_nop();_nop();_nop();_nop();_nop(); //SDAÀ­µÍºó±£³Ö  > 100ns
-	I2C_SCL_L;                                       //Ê±ÖÓÎªµÍÊ±ÔÊĞíSDAĞ´
+	_nop();_nop();_nop();_nop();_nop();_nop();_nop(); //SDAæ‹‰ä½åä¿æŒ  > 100ns
+	I2C_SCL_L;                                       //æ—¶é’Ÿä¸ºä½æ—¶å…è®¸SDAå†™
 	_nop(); _nop();_nop();_nop();_nop();_nop();       //Tlow  > 1300ns
 }
 
-/*Í£Ö¹ĞÅºÅ£ºÊ±ÖÓĞÅºÅÎª¸ßÆÚ¼ä£¬½«SDAÀ­¸ßÎªÍ£Ö¹ĞÅºÅ*/
+/*åœæ­¢ä¿¡å·ï¼šæ—¶é’Ÿä¿¡å·ä¸ºé«˜æœŸé—´ï¼Œå°†SDAæ‹‰é«˜ä¸ºåœæ­¢ä¿¡å·*/
 void i2c_stop()
 {
     I2C_SDA_O;     // output
     I2C_SDA_L;
 	_nop();_nop();_nop();_nop();
 	I2C_SCL_H;
-	_nop();_nop();_nop();_nop();_nop();_nop();_nop(); //stop ½¨Á¢ >100ns
+	_nop();_nop();_nop();_nop();_nop();_nop();_nop(); //stop å»ºç«‹ >100ns
 	I2C_SDA_H;
 	_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();
     I2C_SCL_L;
-    _nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();  //stop ÓëÏÂÒ»¸östartÖÁÉÙ600ns
+    _nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();  //stop ä¸ä¸‹ä¸€ä¸ªstartè‡³å°‘600ns
 }
 
 /*************************************
-*º¯ÊıÃû³Æ£ºi2c_read
-*º¯Êı¹¦ÄÜ£º¶ÁÈ¡Êı¾İ
-*Èë¿Ú²ÎÊı£º
-*³ö¿Ú²ÎÊı£ºread_data
+*å‡½æ•°åç§°ï¼ši2c_read
+*å‡½æ•°åŠŸèƒ½ï¼šè¯»å–æ•°æ®
+*å…¥å£å‚æ•°ï¼š
+*å‡ºå£å‚æ•°ï¼šread_data
 *************************************/
 unsigned char i2c_read()
 {
     unsigned char i, read_data;
-	I2C_SDA_I;                 //ÉèÖÃÎªÊäÈë£¬×¼±¸¶ÁÈ¡Êı¾İ
+	I2C_SDA_I;                 //è®¾ç½®ä¸ºè¾“å…¥ï¼Œå‡†å¤‡è¯»å–æ•°æ®
 	for(i=0; i<8; i++)
 	{
 	    _nop();_nop();_nop();
-		I2C_SCL_H;             //½«SCLÀ­¸ß¿ªÊ¼¶ÁÈ¡ĞÅºÅ
+		I2C_SCL_H;             //å°†SCLæ‹‰é«˜å¼€å§‹è¯»å–ä¿¡å·
 		_nop();_nop();_nop();_nop();_nop(); _nop(); _nop(); _nop();_nop();
-		read_data <<= 1;       //×óÒÆÒ»Î»
+		read_data <<= 1;       //å·¦ç§»ä¸€ä½
 		if(BIT1 == I2C_SDA_V)
 		{
 		    read_data = read_data + 1;
@@ -98,27 +98,27 @@ unsigned char i2c_read()
 		_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();
 		I2C_SCL_L;
 	}
-	I2C_SDA_O;                 //ÉèÖÃÎªÊä³ö£¬·¢ËÍÓ¦´ğ
-	I2C_SDA_L;                 //Ó¦´ğ
+	I2C_SDA_O;                 //è®¾ç½®ä¸ºè¾“å‡ºï¼Œå‘é€åº”ç­”
+	I2C_SDA_L;                 //åº”ç­”
 	_nop();_nop();_nop();
-	I2C_SCL_H;                 //µÚ¾Å¸öÊ±ÖÓ£¬ÈÃ¶Ô·½¶ÁÈ¡Ó¦´ğ
-	_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();  //µÈ´ı¶Ô·½½ÓÊÜÓ¦´ğ
+	I2C_SCL_H;                 //ç¬¬ä¹ä¸ªæ—¶é’Ÿï¼Œè®©å¯¹æ–¹è¯»å–åº”ç­”
+	_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();  //ç­‰å¾…å¯¹æ–¹æ¥å—åº”ç­”
     I2C_SCL_L;
     _nop(); _nop(); _nop(); _nop();_nop();_nop(); _nop(); _nop(); _nop();_nop();
 	return (read_data);
 }
 
 /*************************************
-*º¯ÊıÃû³Æ£ºi2c_HS
-*º¯Êı¹¦ÄÜ£ºÇĞ»»µ½HSÄ£Ê½
-*Èë¿Ú²ÎÊı£ºwrite_data
-*³ö¿Ú²ÎÊı£ºack_bit
+*å‡½æ•°åç§°ï¼ši2c_HS
+*å‡½æ•°åŠŸèƒ½ï¼šåˆ‡æ¢åˆ°HSæ¨¡å¼
+*å…¥å£å‚æ•°ï¼šwrite_data
+*å‡ºå£å‚æ•°ï¼šack_bit
 *************************************/
 void i2c_HS(void)
 {
     unsigned char i;
     unsigned char write_data = 0x0f;
-	I2C_SDA_O;                            //Ğ´²Ù×÷ÉèÖÃÎªÊä³ö
+	I2C_SDA_O;                            //å†™æ“ä½œè®¾ç½®ä¸ºè¾“å‡º
 	for(i=0; i<8; i++)
 	{
 	    if(write_data & 0x80)
@@ -129,28 +129,28 @@ void i2c_HS(void)
 		{
 		    I2C_SDA_L;
 		}
-		_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();   //Êı¾İ½¨Á¢Ê±¼ä  > 100ns
+		_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();   //æ•°æ®å»ºç«‹æ—¶é—´  > 100ns
 		I2C_SCL_H;
 		_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();   //T high > 600ns
 		I2C_SCL_L;
-		_nop();                                             //Êı¾İ±£´æÊ±¼ä   > 0ns
-        _nop();_nop(); _nop(); _nop(); _nop(); _nop();_nop();_nop();_nop();_nop();     //SCL Ê±ÖÓµÍÖÜÆÚ > 1300ns
+		_nop();                                             //æ•°æ®ä¿å­˜æ—¶é—´   > 0ns
+        _nop();_nop(); _nop(); _nop(); _nop(); _nop();_nop();_nop();_nop();_nop();     //SCL æ—¶é’Ÿä½å‘¨æœŸ > 1300ns
 		write_data <<= 1;
 	}
-	I2C_SCL_L;                                               //ÇĞ»»µ½¸ßËÙÄ£Ê½£¬Ğ´Íê³É£¬SCLÀ­µÍ£¬ÎŞACK
+	I2C_SCL_L;                                               //åˆ‡æ¢åˆ°é«˜é€Ÿæ¨¡å¼ï¼Œå†™å®Œæˆï¼ŒSCLæ‹‰ä½ï¼Œæ— ACK
 	_nop();_nop();_nop(); _nop(); _nop(); _nop();_nop();_nop();_nop();
 }
 
 /*************************************
-*º¯ÊıÃû³Æ£ºi2c_write
-*º¯Êı¹¦ÄÜ£ºĞ´ÈëÊı¾İ
-*Èë¿Ú²ÎÊı£ºwrite_data
-*³ö¿Ú²ÎÊı£ºack_bit
+*å‡½æ•°åç§°ï¼ši2c_write
+*å‡½æ•°åŠŸèƒ½ï¼šå†™å…¥æ•°æ®
+*å…¥å£å‚æ•°ï¼šwrite_data
+*å‡ºå£å‚æ•°ï¼šack_bit
 *************************************/
 void i2c_write(unsigned char write_data)
 {
     unsigned char i;
-	I2C_SDA_O;                  //Ğ´²Ù×÷ÉèÖÃÎªÊä³ö
+	I2C_SDA_O;                  //å†™æ“ä½œè®¾ç½®ä¸ºè¾“å‡º
 	for(i=0; i<8; i++)
 	{
 	    if(write_data & 0x80)
@@ -161,35 +161,35 @@ void i2c_write(unsigned char write_data)
 		{
 		    I2C_SDA_L;
 		}
-		_nop();_nop();_nop();_nop();_nop();        //Êı¾İ½¨Á¢Ê±¼ä  > 100ns
+		_nop();_nop();_nop();_nop();_nop();        //æ•°æ®å»ºç«‹æ—¶é—´  > 100ns
 		I2C_SCL_H;
 		_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();_nop();    //T high > 600ns
 		I2C_SCL_L;
-		_nop();                                             //Êı¾İ±£´æÊ±¼ä   > 0ns
-        _nop();_nop(); _nop(); _nop(); _nop(); _nop();_nop();_nop();_nop();_nop();     //SCL Ê±ÖÓµÍÖÜÆÚ > 1300ns
+		_nop();                                             //æ•°æ®ä¿å­˜æ—¶é—´   > 0ns
+        _nop();_nop(); _nop(); _nop(); _nop(); _nop();_nop();_nop();_nop();_nop();     //SCL æ—¶é’Ÿä½å‘¨æœŸ > 1300ns
 		write_data <<= 1;
 	}
-	I2C_SDA_I;             //ÉèÖÃÎªÊäÈë,×¼±¸¶ÁÈ¡Ó¦´ğ
+	I2C_SDA_I;             //è®¾ç½®ä¸ºè¾“å…¥,å‡†å¤‡è¯»å–åº”ç­”
 	_nop(); _nop(); _nop();_nop();_nop();_nop();
 	I2C_SCL_H;
 	_nop(); _nop(); _nop();_nop();_nop();_nop();
-	if(BIT1 == I2C_SDA_V)       //¶ÁÈ¡Ó¦´ğ
+	if(BIT1 == I2C_SDA_V)       //è¯»å–åº”ç­”
     {
-        eflag = 1;         //Ã»ÓĞÊÕµ½Ó¦´ğ
+        eflag = 1;         //æ²¡æœ‰æ”¶åˆ°åº”ç­”
     }
 	else
 	{
-	    eflag = 0;        //ÊÕµ½Ó¦´ğ
+	    eflag = 0;        //æ”¶åˆ°åº”ç­”
 	}
-	I2C_SCL_L;              //Ğ´Íê³É£¬SCLÀ­µÍ
+	I2C_SCL_L;              //å†™å®Œæˆï¼ŒSCLæ‹‰ä½
 	_nop();_nop();_nop(); _nop(); _nop(); _nop(); _nop(); _nop();_nop();
 }
 
 /*************************************
-*º¯ÊıÃû³Æ£ºi2c_write_to_addr
-*º¯Êı¹¦ÄÜ£ºĞ´ÈëÊı¾İµ½Ö¸¶¨µÄµØÖ·
-*Èë¿Ú²ÎÊı£ºaddr, WDataH, WDataL
-*³ö¿Ú²ÎÊı£º
+*å‡½æ•°åç§°ï¼ši2c_write_to_addr
+*å‡½æ•°åŠŸèƒ½ï¼šå†™å…¥æ•°æ®åˆ°æŒ‡å®šçš„åœ°å€
+*å…¥å£å‚æ•°ï¼šaddr, WDataH, WDataL
+*å‡ºå£å‚æ•°ï¼š
 *************************************/
 void i2c_write_to_addr(unsigned char addr, unsigned char WDataH, unsigned char WDataL)
 {
@@ -207,10 +207,10 @@ void i2c_write_to_addr(unsigned char addr, unsigned char WDataH, unsigned char W
 }
 
 /*************************************
-*º¯ÊıÃû³Æ£ºi2c_read_by_addr
-*º¯Êı¹¦ÄÜ£ºÏòÖ¸¶¨µØÖ·¶ÁÈ¡Êı¾İ
-*Èë¿Ú²ÎÊı£ºaddr
-*³ö¿Ú²ÎÊı£ºvoid
+*å‡½æ•°åç§°ï¼ši2c_read_by_addr
+*å‡½æ•°åŠŸèƒ½ï¼šå‘æŒ‡å®šåœ°å€è¯»å–æ•°æ®
+*å…¥å£å‚æ•°ï¼šaddr
+*å‡ºå£å‚æ•°ï¼švoid
 *************************************/
 int i2c_read_by_addr(unsigned char addr)
 {

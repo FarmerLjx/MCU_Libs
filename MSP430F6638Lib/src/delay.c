@@ -1,8 +1,8 @@
-/* 
+ï»¿/* 
 * @FileName: delay.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:14
-* @Description: Ïà¹ØÑÓÊ±º¯Êı£¬lcd12864ÖĞĞèÒªµÄÑÓÊ±º¯ÊıÒ²ÔÚÕâÀïÌá¹©£»×¼È·ÑÓÊ±µÄº¯Êı¾«¶È¿ÉÄÜ²»ÊÇºÜ¸ß
+* @Description: ç›¸å…³å»¶æ—¶å‡½æ•°ï¼Œlcd12864ä¸­éœ€è¦çš„å»¶æ—¶å‡½æ•°ä¹Ÿåœ¨è¿™é‡Œæä¾›ï¼›å‡†ç¡®å»¶æ—¶çš„å‡½æ•°ç²¾åº¦å¯èƒ½ä¸æ˜¯å¾ˆé«˜
 * @Modified by  |  Modified time  |  Description 
 *  
 */
@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include "../inc/delay.h"
 
-//CPU_FÎªµ±Ç°ÏµÍ³Ê±ÖÓµÄÖ÷Æµ
+//CPU_Fä¸ºå½“å‰ç³»ç»Ÿæ—¶é’Ÿçš„ä¸»é¢‘
 #define CPU_F ((double)25000000)
 #define ONE_MS			6250
 #define ONE_FOUR_O_US	875

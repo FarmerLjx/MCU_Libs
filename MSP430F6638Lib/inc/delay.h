@@ -1,12 +1,11 @@
-/* 
+﻿/* 
 * @FileName: delay.h
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
-* @Description: ��ʱͷ�ļ�
+* @Description: 延时头文件
 * @Modified by  |  Modified time  |  Description 
 *  
 */
-
 
 #ifndef DELAY_H_
 #define DELAY_H_

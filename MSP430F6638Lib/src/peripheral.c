@@ -1,9 +1,9 @@
-/* 
+﻿/* 
 * @FileName: peripheral.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 20:42:45
-* @Description: MSP430����ĳ�ʼ��ģ�飬ISR���Զ����ڸ��ļ���Ҳ���Զ����������ļ���
-*               ͨ��ISR_INLINE��ISR_OUTLINE��ʵ��
+* @Description: MSP430外设的初始化模块，ISR可以定义在该文件，也可以定义在其他文件中
+*               通过ISR_INLINE和ISR_OUTLINE宏实现
 * @Modified by  |  Modified time  |  Description 
 *  
 */
@@ -14,8 +14,8 @@
 //#define ISR_INLINE
 #define ISR_OUTLINE
 
-// ADC ��ʼ������
-// ��ʼ��ʹ��A0-A3��refΪAVcc��ʹ��SEQת�����У�
+// ADC 初始化程序
+// 初始化使用A0-A3，ref为AVcc，使用SEQ转换序列，
 void ADCInit(void)
 {
 	volatile unsigned int i;
@@ -35,10 +35,10 @@ void ADCInit(void)
 
 }
 
-// �Ƚ����ĳ�ʼ�������ñȽ����ţ��ͱȽϽ��������ţ�������Ҫ�ʵ���ʱ���ȴ��ο���ѹ����
+// 比较器的初始化，设置比较引脚，和比较结果输出引脚；可能需要适当延时，等待参考电压建立
 void CompInit(void)
 {
-	//���ñȽ���, CB0(P6.0)���룬P3.0������������2V�����Ϊ��
+	//设置比较器, CB0(P6.0)输入，P3.0输出，如果大于2V，输出为高
 	P3DIR |= BIT0;                            // P3.0 output direction
 	P3SEL |= BIT0;                            // Select CBOUT function on P3.0/CBOUT
 
@@ -53,11 +53,11 @@ void CompInit(void)
 }
 
 
-// UART��ʼ������Ҫ�õ��˿ڲ���
+// UART初始化，需要用到端口布局
 void UARTInit(void)
 {
-	Port_Mapping();                           //��I/O������Ϊ���ڹ���
-    //��P2.0����ΪTX��P2.1����ΪRX
+	Port_Mapping();                           //把I/O口设置为串口功能
+    //把P2.0设置为TX，P2.1设置为RX
     P2SEL |= 0x03;                            // Assign P2.0 to UCA0TXD and...
 	P2DIR |= 0x03;                            // P2.1 to UCA0RXD
 	UCA0CTL1 |= UCSWRST;                      // **Put state machine in reset**
@@ -69,7 +69,7 @@ void UARTInit(void)
 	UCA0IE |= UCRXIE;                         // Enable USCI_A0 RX interrupt
 }
 
-// �˿ڲ���
+// 端口布局
 void Port_Mapping(void)
 {
   // Disable Interrupts before altering Port Mapping registers

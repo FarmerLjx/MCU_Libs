@@ -1,8 +1,8 @@
-/* 
+ï»¿/* 
 * @FileName: ad9954.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:14
-* @Description: DDS£¬AD9954µÄÇı¶¯£¬Ö§³Öµ¥ÕıÏÒºÍRAMÄ£Ê½£»Ìá¹©¿ØÖÆÕıÏÒ²¨µÄÆµÂÊºÍ·ùÖµµÄº¯Êı
+* @Description: DDSï¼ŒAD9954çš„é©±åŠ¨ï¼Œæ”¯æŒå•æ­£å¼¦å’ŒRAMæ¨¡å¼ï¼›æä¾›æ§åˆ¶æ­£å¼¦æ³¢çš„é¢‘ç‡å’Œå¹…å€¼çš„å‡½æ•°
 * @Modified by  |  Modified time  |  Description 
 * 
 */
@@ -52,15 +52,15 @@ void AD9954Send(unsigned char dat)
     }
 }
 
-// ÉèÖÃµ¥ÕıÏÒ²¨µÄÆµÂÊ
-// ulFreq -- ÒªÉèÖÃµÄÆµÂÊ£¬µ¥Î»ÎªHz
+// è®¾ç½®å•æ­£å¼¦æ³¢çš„é¢‘ç‡
+// ulFreq -- è¦è®¾ç½®çš„é¢‘ç‡ï¼Œå•ä½ä¸ºHz
 void SetFreqToHz(unsigned long ulFreq)
 {
 	unsigned long ulRegValue;   //
 	unsigned char ucTemp;
 	int i = 0;
 	
-	ulRegValue = (unsigned long)(AD9954_FREQ_PER_HZ * ulFreq);  // µ¥Î»ÓÉ ³ËÊı ºêAD9954_FREQ_PER_HZ ¾ö¶¨
+	ulRegValue = (unsigned long)(AD9954_FREQ_PER_HZ * ulFreq);  // å•ä½ç”± ä¹˜æ•° å®AD9954_FREQ_PER_HZ å†³å®š
 	
 	AD9954_CS_L;
 	
@@ -74,8 +74,8 @@ void SetFreqToHz(unsigned long ulFreq)
 	AD9954Update();
 }
 
-// ÉèÖÃAD9954µÄÒ»¸ö°ËÎ»¼Ä´æÆ÷µÄÖµ
-// ucRegName - ¼Ä´æÆ÷µÄÃû×Ö£¬ uiVaue - ÒªÉèÖÃµÄÖµ
+// è®¾ç½®AD9954çš„ä¸€ä¸ªå…«ä½å¯„å­˜å™¨çš„å€¼
+// ucRegName - å¯„å­˜å™¨çš„åå­—ï¼Œ uiVaue - è¦è®¾ç½®çš„å€¼
 void AD9954SetReg8(unsigned char ucRegName, unsigned int uiValue)
 {
 	AD9954_CS_L; 
@@ -88,7 +88,7 @@ void AD9954SetReg8(unsigned char ucRegName, unsigned int uiValue)
 	AD9954Update();
 }
 
-// ÏßĞÔÉ¨ÃèÄ£Ê½
+// çº¿æ€§æ‰«ææ¨¡å¼
 void LinearSweepMode(void)
 {
 	AD9954_CS_L;
@@ -127,7 +127,7 @@ void LinearSweepMode(void)
 	IO_UPDATE_L;
 }
 
-// RAM Ä£Ê½
+// RAM æ¨¡å¼
 void RAMControlledMode(void)
 {
 	AD9954_PS0_L;
@@ -156,9 +156,9 @@ void RAMControlledMode(void)
 	AD9954Send(0x00);
 	
 	AD9954Send(RSCW1);
-	AD9954Send(0xff);   // 24 -39 É¨ÃèRAMµØÖ·Ê±Í£ÁôSYNC_CLKµÄÖÜÆÚÊı£º1-65535
+	AD9954Send(0xff);   // 24 -39 æ‰«æRAMåœ°å€æ—¶åœç•™SYNC_CLKçš„å‘¨æœŸæ•°ï¼š1-65535
 	AD9954Send(0xff);   
-	AD9954Send(0x00);   // <23:16> <9:8>£º Final address
+	AD9954Send(0x00);   // <23:16> <9:8>ï¼š Final address
 	AD9954Send(0x01);   // <15:10> = 0000_00
 	AD9954Send(0x04);   // <3:0> = 0100; <3:0> <15:10>:  Start address
 
@@ -187,7 +187,7 @@ void RamInit4PS(void)
 	
 	AD9954_CS_L;  // Write Enable
 	AD9954Send(CFR1); // RAM phase
-	AD9954Send(0xC0); // 1100  <31><30> = 11 <30>=1: RAMÊä³öµ½ÏàÎ»Æ«ÒÆÆ÷£¬ÊµÏÖÏàÒÆ
+	AD9954Send(0xC0); // 1100  <31><30> = 11 <30>=1: RAMè¾“å‡ºåˆ°ç›¸ä½åç§»å™¨ï¼Œå®ç°ç›¸ç§»
 	AD9954Send(0x00); // <21> is cleared, inactive other fitures by default 
 	AD9954Send(0x02); // <8>=1 MSB first <9>=1 SDIO as Input only(3-line Mode)  
 	AD9954Send(0x42); // <1>=1 SYNC_CLK inactive <5>=0 DAC is enable <6>=1 comparator is disable 
@@ -196,7 +196,7 @@ void RamInit4PS(void)
 	
 	AD9954_CS_L;  // Write Enable
 	AD9954Send(RAM);
-	// Phase 0¡ã 0x00_00_00_00
+	// Phase 0Â° 0x00_00_00_00
 	AD9954Send(0x00);
 	AD9954Send(0x00);
 	AD9954Send(0x00);
@@ -208,7 +208,7 @@ void RamInit4PS(void)
 	AD9954_PS1_L;
 	AD9954_CS_L;
 	AD9954Send(RAM);
-	// Phase 90¡ã 0x00_00_00_00
+	// Phase 90Â° 0x00_00_00_00
 	AD9954Send(0x40);
 	AD9954Send(0x00);
 	AD9954Send(0x00);
@@ -220,7 +220,7 @@ void RamInit4PS(void)
 	AD9954_PS1_H;
 	AD9954_CS_L;
 	AD9954Send(RAM);
-	// Phase 180¡ã 0x00_00_10_00
+	// Phase 180Â° 0x00_00_10_00
 	AD9954Send(0x80);
 	AD9954Send(0x00);
 	AD9954Send(0x00);
@@ -232,7 +232,7 @@ void RamInit4PS(void)
 	AD9954_PS1_H;
 	AD9954_CS_L;
 	AD9954Send(RAM);
-	// Phase 270¡ã 0x00_00_18_00
+	// Phase 270Â° 0x00_00_18_00
 	AD9954Send(0xc0);
 	AD9954Send(0x00);
 	AD9954Send(0x00);
@@ -248,7 +248,7 @@ void RamInit4FS(void)
 	
 	AD9954_CS_L;  // Write Enable
 	AD9954Send(CFR1); // Set CFR1
-	AD9954Send(0x80); // RAM frequence, <30>=0:RAMÊä³öµ½ÏàÎ»ÀÛ¼ÆÆ÷£¬ÊµÏÖÆµÒÆ
+	AD9954Send(0x80); // RAM frequence, <30>=0:RAMè¾“å‡ºåˆ°ç›¸ä½ç´¯è®¡å™¨ï¼Œå®ç°é¢‘ç§»
 	AD9954Send(0x00);
 	AD9954Send(0x02);
 	AD9954Send(0x00);
@@ -302,7 +302,7 @@ void RamInit4FS(void)
 	AD9954Update();
 }
 
-// ÒÆÏà
+// ç§»ç›¸
 void PhaseShift(unsigned int uiValue)
 {
 	AD9954_CS_L;          //POW0.Phase shift (0x 3f ff ==> 360)
@@ -315,14 +315,14 @@ void PhaseShift(unsigned int uiValue)
 	AD9954Update();
 }
 
-// µ¥Ò»ÕıÏÒ
+// å•ä¸€æ­£å¼¦
 void SingleTone(void)
 {
 	AD9954_CS_L;
 
 	AD9954Send(CFR1);        //CFR1  0-7 8-15 16-23 24-31
-	AD9954Send(0x02);        //CFR<25> bit1 OSK Enable,bit0 Auto OSK Enable;  // µ÷½Ú·ù¶È <25:24>ÒªÖÃÒ»
-	AD9954Send(0x00);        // CFR1<4> Ê¹ÓÃÆ¬ÉÏ¾§Õñ and CFR2<7:3> ±¶Æµ±¶Êı
+	AD9954Send(0x02);        //CFR<25> bit1 OSK Enable,bit0 Auto OSK Enable;  // è°ƒèŠ‚å¹…åº¦ <25:24>è¦ç½®ä¸€
+	AD9954Send(0x00);        // CFR1<4> ä½¿ç”¨ç‰‡ä¸Šæ™¶æŒ¯ and CFR2<7:3> å€é¢‘å€æ•°
 	AD9954Send(0x02);
 	AD9954Send(0x00);        //bit6 comp PD,bit1 SYNC_clk Disable;SYNC_clk = DDSclk/4;
 	AD9954Update();
@@ -330,11 +330,11 @@ void SingleTone(void)
 	AD9954Send(CFR2);         //CFR2  0-7 8-15 16-23
 	AD9954Send(0x00);         //not used;
 	AD9954Send(0x00);         //bit3 High Speed SYNC Enable;
-	AD9954Send(0x84);         //<7:3> = 0001 0000 = 16£¬16*25MHz = 400MHz
+	AD9954Send(0x84);         //<7:3> = 0001 0000 = 16ï¼Œ16*25MHz = 400MHz
 	AD9954Update();
 
 	AD9954Send(ASF);          //ASF,when OSK Enabled(CFR1 bit25);
-    AD9954Send(0x3f);         //<15:14> 01 -> 2±¶, <13:0> 3fff
+    AD9954Send(0x3f);         //<15:14> 01 -> 2å€, <13:0> 3fff
     AD9954Send(0xff);
 
 	AD9954Send(FTW0);         // FTW0 1MHz (0x ff ff ff ff ==> 400MHz)

@@ -1,5 +1,5 @@
-
-Òº¾§ÆÁ½Ó¿ÚËµÃ÷
+ï»¿
+æ¶²æ™¶å±æŽ¥å£è¯´æ˜Ž
 // LCD Pin 7  : SCLK  --  P3.5
 // LCD Pin 8  : DI    --  P3.6
 // LCD Pin 9  : CS    --  P3.7
@@ -9,4 +9,4 @@
 // LCD Pin 13 : RES   --  CONNECT VCC
 // LCD Pin 14 : A0    --  P8.2
 
-±¾´Î¹¤³ÌÖÐ Ã»ÓÐÊ¹ÓÃÈí¼þ¸´Î»£¬¶øÊÇÖ±½Ó½«¸ÃÒý½Å£¨res£©Á¬½ÓVCCÉÏ¡£
+æœ¬æ¬¡å·¥ç¨‹ä¸­ æ²¡æœ‰ä½¿ç”¨è½¯ä»¶å¤ä½ï¼Œè€Œæ˜¯ç›´æŽ¥å°†è¯¥å¼•è„šï¼ˆresï¼‰è¿žæŽ¥VCCä¸Šã€‚

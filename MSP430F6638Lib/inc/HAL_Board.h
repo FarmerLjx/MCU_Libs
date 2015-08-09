@@ -1,10 +1,10 @@
-/* 
+ï»¿/* 
 * @FileName: HAL_Board.h
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
 * @Description: 
 * @Modified by  |  Modified time  |  Description 
-*     PeeNut        2015-08-09       ÒÆ³ýstdint.hÍ·ÎÄ¼þ£¬uint8_tÓÃunsigned int´úÌæ
+*     PeeNut        2015-08-09       ç§»é™¤stdint.hå¤´æ–‡ä»¶ï¼Œuint8_tç”¨unsigned intä»£æ›¿
 */
 
 #ifndef __HAL_BOARD_H__

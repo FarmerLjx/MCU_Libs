@@ -1,16 +1,16 @@
-/* 
+ï»¿/* 
 * @FileName: q_value.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
-* @Description: ÖÆ×÷Q±íµÄÊ±ºòĞ´µÄ£¬Ö÷ÒªÌá¹©µÄÊÇÒ»¸ö²éÕÒ±íµÄº¯Êı
-*               ¶ş·Ö·¨ÊµÏÖ£¬²éÕÒ±íºÍÄ¿±ê×î½Ó½üµÄÁ½¸öÊı×Ö
+* @Description: åˆ¶ä½œQè¡¨çš„æ—¶å€™å†™çš„ï¼Œä¸»è¦æä¾›çš„æ˜¯ä¸€ä¸ªæŸ¥æ‰¾è¡¨çš„å‡½æ•°
+*               äºŒåˆ†æ³•å®ç°ï¼ŒæŸ¥æ‰¾è¡¨å’Œç›®æ ‡æœ€æ¥è¿‘çš„ä¸¤ä¸ªæ•°å­—
 * @Modified by  |  Modified time  |  Description 
 *  
 */
 
 #include "../inc/q_value.h"
 
-// µçÈİ²éÕÒ±í -- µçÈİÖµ: 10 * 12 + 4
+// ç”µå®¹æŸ¥æ‰¾è¡¨ -- ç”µå®¹å€¼: 10 * 12 + 4
 float CTableC[C_TABLE_NUM] = {
 	303.000, 302.000, 299.700, 296.100, 293.900, 291.900, 289.700, 287.700, 285.200, 283.100, /*10*/
 	281.100, 279.000, 278.300, 276.500, 273.900, 272.200, 270.600, 268.400, 267.500, 265.600, /*20*/
@@ -27,7 +27,7 @@ float CTableC[C_TABLE_NUM] = {
 	9.899, 8.203, 7.495, 7.166 /*124*/
 };
 
-// µçÈİ²éÕÒ±í -- µçÑ¹±ÈÖµ
+// ç”µå®¹æŸ¥æ‰¾è¡¨ -- ç”µå‹æ¯”å€¼
 float CTableVRate[C_TABLE_NUM] = {
 	1.367, 1.381, 1.391, 1.401, 1.410, 1.415, 1.419, 1.424, 1.431, 1.436,   /*10*/
 	1.445, 1.450, 1.452, 1.462, 1.470, 1.474, 1.479, 1.482, 1.488, 1.494,   /*20*/
@@ -46,7 +46,7 @@ float CTableVRate[C_TABLE_NUM] = {
 
 
 // Function List
-// ¸ù¾İµçÑ¹±ÈÖµ»ñÈ¡µçÈİÖµ
+// æ ¹æ®ç”µå‹æ¯”å€¼è·å–ç”µå®¹å€¼
 float GetCValueByVRate(float fVRate)
 {
 	int mid;
@@ -56,7 +56,7 @@ float GetCValueByVRate(float fVRate)
 	
 	mid = BinarySearchRecursion(CTableVRate, fVRate, start, end);
 	
-	// ²»ÔÚ±íµÄ·¶Î§Ö®ÄÚ£¬ÔòÊ¹ÓÃ½üËÆ¹«Ê½¼ÆËã
+	// ä¸åœ¨è¡¨çš„èŒƒå›´ä¹‹å†…ï¼Œåˆ™ä½¿ç”¨è¿‘ä¼¼å…¬å¼è®¡ç®—
 	if(-1 == mid){
 		fRet = (-2.5949 * fVRate + 313.79);
 		if(fRet < 0){
@@ -66,7 +66,7 @@ float GetCValueByVRate(float fVRate)
 			fRet = 313.79;
 		}
 	}
-	// Èç¹ûÔÚ±íÄÚ£¬ÔòÊ¹ÓÃ
+	// å¦‚æœåœ¨è¡¨å†…ï¼Œåˆ™ä½¿ç”¨
 	else{
 		fRet = (CTableC[mid] + CTableC[mid + 1]) / 2;
 	}
@@ -74,7 +74,7 @@ float GetCValueByVRate(float fVRate)
 	return fRet;
 }
 
-// ¶ş·Ö·¨²éÕÒÖĞ¼äÁ½Î»ºÍÄ¿±ê×î½Ó½üµÄË÷Òı£¬·µ»Ø½ÏĞ¡µÄÒ»¸ö£¬mid£¬±íÊ¾Ä¿±êvalueÂú×ã£º
+// äºŒåˆ†æ³•æŸ¥æ‰¾ä¸­é—´ä¸¤ä½å’Œç›®æ ‡æœ€æ¥è¿‘çš„ç´¢å¼•ï¼Œè¿”å›è¾ƒå°çš„ä¸€ä¸ªï¼Œmidï¼Œè¡¨ç¤ºç›®æ ‡valueæ»¡è¶³ï¼š
 // arry[mid] <= value < arry[mid+1]
 int BinarySearchRecursion(float arry[], float value, int start,int end)
 {
@@ -86,17 +86,17 @@ int BinarySearchRecursion(float arry[], float value, int start,int end)
 	}
 	
     int mid = start + (end - start) / 2;
-	// Ö»ÄÜËµÊÇ½üËÆÖµ£¬ËùÒÔÕâÀïµÄÅĞ¶ÏÌõ¼şĞèÒª×¢Òâ
-	// ÔÚmidºÍmid+1Ö®¼ä£¬·µ»Ømid
+	// åªèƒ½è¯´æ˜¯è¿‘ä¼¼å€¼ï¼Œæ‰€ä»¥è¿™é‡Œçš„åˆ¤æ–­æ¡ä»¶éœ€è¦æ³¨æ„
+	// åœ¨midå’Œmid+1ä¹‹é—´ï¼Œè¿”å›mid
     if(value >= arry[mid] && value <= arry[mid+1])
         return mid;
-	// Èç¹ûĞ¡ÓÚmid£¬endÉèÖÃÎªmid (Èç¹ûÉèÖÃÎªmid-1»á³öÏÖÒÅÂ©£¬µ¼ÖÂ³ö´í)
+	// å¦‚æœå°äºmidï¼Œendè®¾ç½®ä¸ºmid (å¦‚æœè®¾ç½®ä¸ºmid-1ä¼šå‡ºç°é—æ¼ï¼Œå¯¼è‡´å‡ºé”™)
     else if(value < arry[mid])
     {
         end = mid;
         return BinarySearchRecursion(arry, value, start, end);
     }
-	// Èç¹û´óÓÚmid+1,ÉèÖÃstartÎªmid+1 (Èç¹ûÉèÖÃÎªmid+2£¬Ò²»áÓĞÒÅÂ©£¬µ¼ÖÂ³ö´í)
+	// å¦‚æœå¤§äºmid+1,è®¾ç½®startä¸ºmid+1 (å¦‚æœè®¾ç½®ä¸ºmid+2ï¼Œä¹Ÿä¼šæœ‰é—æ¼ï¼Œå¯¼è‡´å‡ºé”™)
     else //  if(value > arry[mid+1])
     {
         start = mid + 1;

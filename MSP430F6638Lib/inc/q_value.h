@@ -1,8 +1,8 @@
-/* 
+ï»¿/* 
 * @FileName: q_value.h
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
-* @Description: Ö÷ÒªÊµÏÖÁËÒ»¸ö²éÕÒ±íº¯Êı£¬ĞèÒªÊ±¿ÉÒÔ×öÏÂĞŞ¸Ä¾ÍÄÜÊ¹ÓÃ£¬»ùÓÚ¶ş·Ö·¨
+* @Description: ä¸»è¦å®ç°äº†ä¸€ä¸ªæŸ¥æ‰¾è¡¨å‡½æ•°ï¼Œéœ€è¦æ—¶å¯ä»¥åšä¸‹ä¿®æ”¹å°±èƒ½ä½¿ç”¨ï¼ŒåŸºäºäºŒåˆ†æ³•
 * @Modified by  |  Modified time  |  Description 
 *  
 */
@@ -10,7 +10,7 @@
 #ifndef __Q_VALUE_H__
 #define __Q_VALUE_H__
 
-#define C_TABLE_NUM    124   // µçÈİ²éÕÒ±íµÄ´óĞ¡
+#define C_TABLE_NUM    124   // ç”µå®¹æŸ¥æ‰¾è¡¨çš„å¤§å°
 
 float GetCValueByVRate(float fVRate);
 int BinarySearchRecursion(float arry[],float value,int start,int end);

@@ -1,10 +1,10 @@
-/* 
+ï»¿/* 
 * @FileName: HAL_Board.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
 * @Description: 
 * @Modified by  |  Modified time  |  Description 
-*     PeeNut        2015-08-09       ³õÊ¼»¯°ÑËùÓĞÒı½ÅÖÃÁã£»ºê¶¨ÒåÒÆµ½Í·ÎÄ¼şÖĞ
+*     PeeNut        2015-08-09       åˆå§‹åŒ–æŠŠæ‰€æœ‰å¼•è„šç½®é›¶ï¼›å®å®šä¹‰ç§»åˆ°å¤´æ–‡ä»¶ä¸­
 */
 
 #include "../inc/HAL_Board.h"

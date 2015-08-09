@@ -1,9 +1,9 @@
-/* 
+ï»¿/* 
 * @FileName: manchester.c
 * @Author  : PeeNut
 * @Date    : 2015-08-08 19:48:15
-* @Description: ÂüÇĞË¹ÌØ±àÂëÊµÏÖ£¬°üº¬masterºÍslaverµÄÈ«²¿´úÂë£¬ĞèÒªÒÆÖ²Òª¶®Ô­Àí
-*               Í¨¹ıMAN_MASTERÔ¤´¦ÀíºêÊµÏÖ±àÒë master »òÕß slaver
+* @Description: æ›¼åˆ‡æ–¯ç‰¹ç¼–ç å®ç°ï¼ŒåŒ…å«masterå’Œslaverçš„å…¨éƒ¨ä»£ç ï¼Œéœ€è¦ç§»æ¤è¦æ‡‚åŸç†
+*               é€šè¿‡MAN_MASTERé¢„å¤„ç†å®å®ç°ç¼–è¯‘ master æˆ–è€… slaver
 * @Modified by  |  Modified time  |  Description 
 *  
 */
@@ -12,8 +12,8 @@
 #include "../inc/lcd_12864.h"
 #include "../inc/delay.h"
 
-#define  MAN_MASTER     //·¢ËÍºÍ½ÓÊÕ¶ËµÄÖĞ¶Ï´¦Àí²»Í¬£¬Ê¹ÓÃÔ¤´¦ÀíºêÊµÏÖÑ¡Ôñ²»Í¬µÄISR£¬µ±Ç°Ñ¡Ôñ£º·¢ËÍ¶Ë
-//#define  MAN_SLAVER     //½ÓÊÕ¶Ë
+#define  MAN_MASTER     //å‘é€å’Œæ¥æ”¶ç«¯çš„ä¸­æ–­å¤„ç†ä¸åŒï¼Œä½¿ç”¨é¢„å¤„ç†å®å®ç°é€‰æ‹©ä¸åŒçš„ISRï¼Œå½“å‰é€‰æ‹©ï¼šå‘é€ç«¯
+//#define  MAN_SLAVER     //æ¥æ”¶ç«¯
 
 // Manchester transport parameters
 unsigned char g_ucParity = 0;
@@ -37,7 +37,7 @@ unsigned char g_ucRXCurBit = 0;
 #endif
 
 /*
- * ³õÊ¼»¯
+ * åˆå§‹åŒ–
 ** Used TB0, P3.4
 */
 void InitManchester(void)
@@ -48,16 +48,16 @@ void InitManchester(void)
 	TBCTL = TBSSEL_2 + TBCLR;  // SMCLK, up mode, clear TBR
 
 #ifdef MAN_MASTER
-	// ÉèÖÃÊä³ö¶Ë¿Ú
+	// è®¾ç½®è¾“å‡ºç«¯å£
 	P3SEL &= ~BIT4;   //I/O
-	P3DIR |= BIT4;    //Êä³ö
+	P3DIR |= BIT4;    //è¾“å‡º
 	
 	START_TB;
 #else
-	// ÉèÖÃÊäÈë¶Ë¿Ú
+	// è®¾ç½®è¾“å…¥ç«¯å£
 	P3SEL &= ~BIT5;   //I/O
-	P3DIR &= ~BIT5;   //ÊäÈë
-	P3IES &= ~BIT5;   //ÉÏÉıÑØ
+	P3DIR &= ~BIT5;   //è¾“å…¥
+	P3IES &= ~BIT5;   //ä¸Šå‡æ²¿
 	MAN_RX_EINT;
 	
 	STOP_TB;
@@ -66,8 +66,8 @@ void InitManchester(void)
 }
 
 #ifdef MAN_MASTER
-// ÓÃ×÷·¢ËÍ¶ËÊ±µÄº¯Êı¶¨Òå
-// ³õÊ¼»¯´«ÊäµÄÊı¾İ
+// ç”¨ä½œå‘é€ç«¯æ—¶çš„å‡½æ•°å®šä¹‰
+// åˆå§‹åŒ–ä¼ è¾“çš„æ•°æ®
 void InitTXData(unsigned char ucData)
 {
 	int i;
@@ -77,20 +77,20 @@ void InitTXData(unsigned char ucData)
 	DisplayByteInHex(ucData, 1, 1);
 
 	for(i=0; i<8; ++i){
-		//Èç¹ûĞèÒª·¢ËÍ1£¬ÏÈÖÃÎªÁã£¬ÔÙÀ­¸ß£¬»ñµÃÒ»¸öÉÏÉıÑØ
+		//å¦‚æœéœ€è¦å‘é€1ï¼Œå…ˆç½®ä¸ºé›¶ï¼Œå†æ‹‰é«˜ï¼Œè·å¾—ä¸€ä¸ªä¸Šå‡æ²¿
 		if((ucData << i) & 0x80){
 			uiTXData <<= 1;
-			uiTXData += 0;   // ÖÃÁã
+			uiTXData += 0;   // ç½®é›¶
 			uiTXData <<= 1;
-			uiTXData += 1;   // À­¸ß
+			uiTXData += 1;   // æ‹‰é«˜
 			iParity ^= 1;
 		}
-		//Èç¹ûĞèÒª·¢ËÍ0£¬ÔòÏÈÖÃÒ»£¬ÔÙÀ­µÍ£¬»ñµÃÒ»¸öÏÂ½µÑØ
+		//å¦‚æœéœ€è¦å‘é€0ï¼Œåˆ™å…ˆç½®ä¸€ï¼Œå†æ‹‰ä½ï¼Œè·å¾—ä¸€ä¸ªä¸‹é™æ²¿
 		else{
 			uiTXData <<= 1;
-			uiTXData += 1;    //ÖÃÒ»
+			uiTXData += 1;    //ç½®ä¸€
 			uiTXData <<= 1;
-			uiTXData += 0;    //À­µÍ
+			uiTXData += 0;    //æ‹‰ä½
 			iParity ^= 0;
 		}
 	}
@@ -99,9 +99,9 @@ void InitTXData(unsigned char ucData)
 	DisplayByteInHex((unsigned char)(uiTXData &0x00ff), 3, 6);
 	DisplayByteInHex((unsigned char)((uiTXData >> 8) &0x00ff), 3, 1);
 
-	// ²éÑ¯·¢ËÍ×´Ì¬
+	// æŸ¥è¯¢å‘é€çŠ¶æ€
 	while(g_ucTXState != SEND_NOTHING);
-	// ¿ªÊ¼·¢ËÍÊı¾İ
+	// å¼€å§‹å‘é€æ•°æ®
 	g_ucTXCnt = 0;
 	g_uiTXData = uiTXData;
 	g_ucParity = iParity;
@@ -112,14 +112,14 @@ void InitTXData(unsigned char ucData)
 // | 0:S | 1-8:DATA | 9:PARITY | 10:P |
 void ManSendData(unsigned char ucIndex)
 {
-	// ·¢ËÍ¿ªÊ¼Î» "0"
+	// å‘é€å¼€å§‹ä½ "0"
 	if(1 == ucIndex){
 		MAN_TX_H;
 	}
 	else if(2 == ucIndex){
 		MAN_TX_L;
 	}
-	// ·¢ËÍ8Î»Êı¾İ 3-18
+	// å‘é€8ä½æ•°æ® 3-18
 	else if(ucIndex>=3 && ucIndex<=18){
 		if((g_uiTXData << (ucIndex - 3)) & 0x8000){
 			MAN_TX_H;
@@ -128,7 +128,7 @@ void ManSendData(unsigned char ucIndex)
 			MAN_TX_L;
 		}
 	}
-	// ·¢ËÍĞ£ÑéÎ»
+	// å‘é€æ ¡éªŒä½
 	else if(19 == ucIndex){
 		if(1 == g_ucParity){
 			MAN_TX_L;
@@ -145,7 +145,7 @@ void ManSendData(unsigned char ucIndex)
 			MAN_TX_L;
 		}
 	}
-	// ·¢ËÍÍ£Ö¹Î» "1"
+	// å‘é€åœæ­¢ä½ "1"
 	else if(21 == ucIndex){
 		MAN_TX_L;
 	}
@@ -161,34 +161,34 @@ void ManSendData(unsigned char ucIndex)
 }
 
 #else
-// ÓÃ×÷½ÓÊÕ¶ËÊ±µÄº¯Êı¶¨Òå
+// ç”¨ä½œæ¥æ”¶ç«¯æ—¶çš„å‡½æ•°å®šä¹‰
 void ManGetData(unsigned char ucIndex)
 {
-	// Ê×ÏÈ»ñÈ¡½ÓÊÕ¶Ë¿ÚµÄµçÆ½£¬"0"»òÕß"1"
-	if(P3IN & BIT5){     // Èç¹ûÊÕµ½µÄÊÇ1
+	// é¦–å…ˆè·å–æ¥æ”¶ç«¯å£çš„ç”µå¹³ï¼Œ"0"æˆ–è€…"1"
+	if(P3IN & BIT5){     // å¦‚æœæ”¶åˆ°çš„æ˜¯1
 		g_ucRXCurBit = 1;
 	}
 	else{
 		g_ucRXCurBit = 0;
 	}
 	
-	// ÔÚIndexÎªÅ¼ÊıµÄÊ±ºò¿ÉÒÔÏÂ¶¨½áÂÛ£¬È·¶¨ÊÕµ½µÄÂüÇĞË¹ÌØ±àÂëÊÇ"0"»òÕß"1"
+	// åœ¨Indexä¸ºå¶æ•°çš„æ—¶å€™å¯ä»¥ä¸‹å®šç»“è®ºï¼Œç¡®å®šæ”¶åˆ°çš„æ›¼åˆ‡æ–¯ç‰¹ç¼–ç æ˜¯"0"æˆ–è€…"1"
 	if(!(ucIndex % 2)){
-		// È·ÈÏÊÇ·ñÎª¿ªÊ¼Î»
+		// ç¡®è®¤æ˜¯å¦ä¸ºå¼€å§‹ä½
 		if(2 == ucIndex){
-			// ÊÇ¿ªÊ¼Î»"0"
+			// æ˜¯å¼€å§‹ä½"0"
 			if(1==g_ucRXPreBit && 0==g_ucRXCurBit){
 				// Doing nothing
 			}
-			// ²»ÊÇ¿ªÊ¼Î»
+			// ä¸æ˜¯å¼€å§‹ä½
 			else{
-				g_ucRXState = WAITING_S; //µÈ´ı¿ªÊ¼Î»
+				g_ucRXState = WAITING_S; //ç­‰å¾…å¼€å§‹ä½
 				g_ucRXIndex = 0;
-				STOP_TB;                 // ¹Ø±Õ¶¨Ê±Æ÷
+				STOP_TB;                 // å…³é—­å®šæ—¶å™¨
 				MAN_RX_EINT;
 			}
 		}
-		// ½ÓÊÕ8Î»Êı¾İ
+		// æ¥æ”¶8ä½æ•°æ®
 		else if(ucIndex>=4 && ucIndex <=18){
 			g_ucRXData <<= 1;
 			// "1"
@@ -201,15 +201,15 @@ void ManGetData(unsigned char ucIndex)
 				g_ucRXData += 0;
 				g_ucParity ^= 0;
 			}
-			// ³öÏÖÎóÂë
+			// å‡ºç°è¯¯ç 
 			else{
-				g_ucRXState = WAITING_S; //µÈ´ı¿ªÊ¼Î»
+				g_ucRXState = WAITING_S; //ç­‰å¾…å¼€å§‹ä½
 				g_ucRXIndex = 0;
-				STOP_TB;                 // ¹Ø±Õ¶¨Ê±Æ÷
+				STOP_TB;                 // å…³é—­å®šæ—¶å™¨
 				MAN_RX_EINT;
 			}
 		}
-		// ½ÓÊÕÆæÅ¼Ğ£ÑéÎ»
+		// æ¥æ”¶å¥‡å¶æ ¡éªŒä½
 		else if(20 == ucIndex){
 			if(0==g_ucRXPreBit && 1==g_ucRXCurBit){
 				g_ucParity ^= 1;
@@ -218,37 +218,37 @@ void ManGetData(unsigned char ucIndex)
 			else if(1==g_ucRXPreBit && 0==g_ucRXCurBit){
 				g_ucParity ^= 0;
 			}
-			// ²»Ìí¼ÓelseÅĞ¶Ï£¬·Å¿í±ê×¼
-			// ¼ìÑéĞ£ÑéÂëÊÇ·ñÕıÈ·
+			// ä¸æ·»åŠ elseåˆ¤æ–­ï¼Œæ”¾å®½æ ‡å‡†
+			// æ£€éªŒæ ¡éªŒç æ˜¯å¦æ­£ç¡®
 			if(!g_ucParity){
-				// ÊÕµ½ÕıÈ·µÄÊı¾İ
+				// æ”¶åˆ°æ­£ç¡®çš„æ•°æ®
 				DisplayByteInHex(g_ucRXData, 1, 1);
 			}
 			else{
-				// ÊÕµ½µÄÊı¾İ²»ÕıÈ·
+				// æ”¶åˆ°çš„æ•°æ®ä¸æ­£ç¡®
 				//DisplayByteInHex(g_ucRXData, 1, 1);
 			}
 		}
-		// ½ÓÊÕÍ£Ö¹Î»
+		// æ¥æ”¶åœæ­¢ä½
 		else if(22 == ucIndex){
 			// "1"
 			if(0==g_ucRXPreBit && 1==g_ucRXCurBit){
-				// ÊÕµ½½áÊøÎ»
+				// æ”¶åˆ°ç»“æŸä½
 			}
 			// "0"
 			else if(1==g_ucRXPreBit && 0==g_ucRXCurBit){
-				//Ã»ÓĞÊÕµ½½áÊøÎ»
+				//æ²¡æœ‰æ”¶åˆ°ç»“æŸä½
 			}
 		}
-		// Í¨ĞÅ½áÊø
+		// é€šä¿¡ç»“æŸ
 		else{
-			g_ucRXState = WAITING_S; //µÈ´ı¿ªÊ¼Î»
+			g_ucRXState = WAITING_S; //ç­‰å¾…å¼€å§‹ä½
 			g_ucRXIndex = 0;
-			STOP_TB;                 // ¹Ø±Õ¶¨Ê±Æ÷
-			MAN_RX_EINT;             // ÖØĞÂÊ¹ÄÜ½ÓÊÕÒı½ÅÖĞ¶Ï
+			STOP_TB;                 // å…³é—­å®šæ—¶å™¨
+			MAN_RX_EINT;             // é‡æ–°ä½¿èƒ½æ¥æ”¶å¼•è„šä¸­æ–­
 		}
 	}
-	// »ñÈ¡Á¬ĞøµÄÁ½Î»bit,ÓÃÓÚÈ·¶¨Ò»Î»ÂüÇĞË¹ÌØ±àÂë
+	// è·å–è¿ç»­çš„ä¸¤ä½bit,ç”¨äºç¡®å®šä¸€ä½æ›¼åˆ‡æ–¯ç‰¹ç¼–ç 
 	else{
 		g_ucRXPreBit = g_ucRXCurBit;
 	}
@@ -265,17 +265,17 @@ __interrupt void TIMERB0_ISR (void)
 	//P3OUT |= BIT4;
 
 	switch(g_ucTXState){
-	//Ã»ÓĞÊı¾İ´«Êä
+	//æ²¡æœ‰æ•°æ®ä¼ è¾“
 	case SEND_NOTHING:
 		g_ucTXIndex = 0;
 		MAN_TX_L;
 		break;
-	//·¢ËÍÊı¾İ
+	//å‘é€æ•°æ®
 	case SENDING_DATA:
-		++g_ucTXIndex;   //ÔÚÕâ¸öcaseÀïÃæ£¬µ÷ÓÃManSendDataÊ±g_ucTXIndexÒ»¶¨ÊÇ´Ó1¿ªÊ¼
+		++g_ucTXIndex;   //åœ¨è¿™ä¸ªcaseé‡Œé¢ï¼Œè°ƒç”¨ManSendDataæ—¶g_ucTXIndexä¸€å®šæ˜¯ä»1å¼€å§‹
 		ManSendData(g_ucTXIndex);
 		break;
-	//¸´Î»
+	//å¤ä½
 	default:
 		g_ucTXState = SEND_NOTHING;
 		g_ucTXIndex = 0;
@@ -299,21 +299,21 @@ __interrupt void PORT3_ISR (void)
 	if(P3IFG & BIT5){
 		//P9OUT ^= BIT6;
 		P3IFG &= ~BIT5;
-		//P3IES ^= BIT5;     // ¼ì²âË«±ßÑØ
+		//P3IES ^= BIT5;     // æ£€æµ‹åŒè¾¹æ²¿
 		
 #ifdef MAN_MASTER
 		_nop();
 #else
 		if(WAITING_S == g_ucRXState){
-			MAN_RX_DINT;                   // ¹Ø±Õ½ÓÊÕ¶Ë¿ÚµÄÖĞ¶ÏÊ¹ÄÜ
-			g_ucRXState = RECEIVING_DATA;  // ¿ÉÄÜÊÕµ½Êı¾İ£¬ÏÂÒ»²½È·ÈÏÊÇ·ñÎª¿ªÊ¼Î»
-			g_ucRXIndex = 1;               // ÊÕµ½µÄÊı¾İÎ»ÊıÇåÁã£¬´Ó1¿ªÊ¼
-			g_ucParity = 0;                // ÆæÅ¼Ğ£ÑéÇåÁã
+			MAN_RX_DINT;                   // å…³é—­æ¥æ”¶ç«¯å£çš„ä¸­æ–­ä½¿èƒ½
+			g_ucRXState = RECEIVING_DATA;  // å¯èƒ½æ”¶åˆ°æ•°æ®ï¼Œä¸‹ä¸€æ­¥ç¡®è®¤æ˜¯å¦ä¸ºå¼€å§‹ä½
+			g_ucRXIndex = 1;               // æ”¶åˆ°çš„æ•°æ®ä½æ•°æ¸…é›¶ï¼Œä»1å¼€å§‹
+			g_ucParity = 0;                // å¥‡å¶æ ¡éªŒæ¸…é›¶
 			for(i=0; i<SAMP_DELAY; ++i){
 				__no_operation();
 			}
-			START_TB;                      // ´ò¿ª¶¨Ê±Æ÷£¬¶¨Ê±Ò»¸öÖÜÆÚÈ¥»ñÈ¡Ò»´ÎÊı¾İ
-			ManGetData(g_ucRXIndex);       // ²É¼¯µÚÒ»Î»Êı¾İ
+			START_TB;                      // æ‰“å¼€å®šæ—¶å™¨ï¼Œå®šæ—¶ä¸€ä¸ªå‘¨æœŸå»è·å–ä¸€æ¬¡æ•°æ®
+			ManGetData(g_ucRXIndex);       // é‡‡é›†ç¬¬ä¸€ä½æ•°æ®
 		}
 		
 #endif

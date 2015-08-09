@@ -1,4 +1,4 @@
-#ifndef LCD_12864_H
+﻿#ifndef LCD_12864_H
 #define LCD_12864_H
 
 #include <msp430.h>
