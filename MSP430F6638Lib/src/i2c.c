@@ -5,12 +5,13 @@
 * @Description: i2c的驱动，本来也是移植自之前pic读写eeprom的代码，协议实现比较完善
 *               针对不同器件（eeprom、TMP112等）稍微修改读写地址和延时即能实现兼容
 * @Modified by  |  Modified time  |  Description 
-*  
+*   PeeNut         20150814 01:36     修改i2c_write函数的返回值，设置为表明是否收到ACK
 */
 
 #include "../inc/i2c.h"
+#include "../inc/delay.h"
 
-//P9.2、P9.3 as I2C's SDA and SCL for I2C
+// Port define for I2C
 #define  I2C_SDA_V  (P3IN & BIT1)       //SDA as input's value
 #define  I2C_SDA_I  (P3DIR &= ~BIT1)    //P3.1 as SDA in input
 #define  I2C_SDA_O  (P3DIR |= BIT1)     //P3.1 as SDA in output
@@ -38,8 +39,14 @@ int ack_count_r = 0;
 void usr_delay()
 {
     int i;
-	i = 100;   //25MHz时为4ms
+	i = 100;   //25MHz时为4us
 	while(--i);
+}
+
+/*延时子程序：ms*/
+void usr_delay_fi()
+{
+    delay_us(4);
 }
 
 /*开始信号：时钟信号为高期间，将SDA拉低为开始信号*/
@@ -145,11 +152,13 @@ void i2c_HS(void)
 *函数名称：i2c_write
 *函数功能：写入数据
 *入口参数：write_data
-*出口参数：ack_bit
+*出口参数：int 返回值表明是否收到应答，0-收到，1-没有收到
 *************************************/
-void i2c_write(unsigned char write_data)
+int i2c_write(unsigned char write_data)
 {
     unsigned char i;
+    int iRet = 0;
+
 	I2C_SDA_O;                  //写操作设置为输出
 	for(i=0; i<8; i++)
 	{
@@ -175,14 +184,16 @@ void i2c_write(unsigned char write_data)
 	_nop(); _nop(); _nop();_nop();_nop();_nop();
 	if(BIT1 == I2C_SDA_V)       //读取应答
     {
-        eflag = 1;         //没有收到应答
+        iRet = 1;         //没有收到应答
     }
 	else
 	{
-	    eflag = 0;        //收到应答
+	    iRet = 0;        //收到应答
 	}
 	I2C_SCL_L;              //写完成，SCL拉低
 	_nop();_nop();_nop(); _nop(); _nop(); _nop(); _nop(); _nop();_nop();
+
+	return iRet;
 }
 
 /*************************************

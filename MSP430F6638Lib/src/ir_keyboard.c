@@ -23,7 +23,7 @@ static int g_iIRValue;
 //static unsigned char g_ucCnt = 0;          // 计数输入数字的位数
 
 // Extern parameters for other modules to use this IR moudle
-unsigned long  g_ulGetNum = 0;       // 用于通过无限遥控获得数字输入，范围为0-65535
+unsigned long  g_ulGetNum = 0;       // 用于通过无线遥控获得数字输入，范围为0-65535
 unsigned char g_ucGetNumFlag = 0;    // 用于确认用户输入完成，并且输入有效范围的数字
 
 void IrInit(void)
@@ -47,83 +47,45 @@ void JudgeAndProc(char key)
 		g_ucCurKey = key;
 		g_ucClickCnt = 1;
 	}
-	disp_word(2, 15, (g_ucClickCnt + 48));
+
+	if(g_ucClickCnt > 15){
+		g_ucClickCnt = 0;
+	}
+	disp_word(2, 20, (g_ucClickCnt + 48));
 	
 	switch(key){
 	case KEY_0:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 0;
-		disp_word(0, 15, 48);
+		disp_word(0, 20, 48);
 		break;
 	case KEY_1:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 1;
-		disp_word(0, 15, 49);
+		disp_word(0, 20, 49);
 		break;
 	case KEY_2:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 2;
-		disp_word(0, 15, 50);
+		disp_word(0, 20, 50);
 		break;
 	case KEY_3:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 3;
-		disp_word(0, 15, 51);
+		disp_word(0, 20, 51);
 		break;
 	case KEY_4:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 4;
-		disp_word(0, 15, 52);
+		disp_word(0, 20, 52);
 		break;
 	case KEY_5:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 5;
-		disp_word(0, 15, 53);
+		disp_word(0, 20, 53);
 		break;
 	case KEY_6:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 6;
-		disp_word(0, 15, 54);
+		disp_word(0, 20, 54);
 		break;
 	case KEY_7:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 7;
-		disp_word(0, 15, 55);
+		disp_word(0, 20, 55);
 		break;
 	case KEY_8:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 8;
-		disp_word(0, 15, 56);
+		disp_word(0, 20, 56);
 		break;
 	case KEY_9:
-		g_ulGetNum *= 10;
-		g_ulGetNum += 9;
-		disp_word(0, 15, 57);
-		break;
-		
-		// *1
-	case KEY_EQ:
-		g_ucGetNumFlag = 1;
-		disp_word(0, 15, '#');
-		break;
-		
-		// *1000
-	case KEY_PLUS_100:
-	    g_ulGetNum *= 1000;
-	    g_ucGetNumFlag = 1;
-		disp_word(0, 15, 'K');
-		break;
-		
-		// *1000000
-	case KEY_PLUS_200:
-		g_ulGetNum *= 1000000;
-		g_ucGetNumFlag = 1;
-		disp_word(0, 15, 'M');
+		disp_word(0, 20, 57);
 		break;
 	default:
-		g_ucGetNumFlag = 0;
-		g_ulGetNum = 0;
-		disp_word(0, 15, '-');
+		disp_word(0, 20, '-');
 		break;
 	}
 }
@@ -134,37 +96,37 @@ void JudgeAndDisplayKeys(char key)
 	disp_str(0, 10, "Pre.: ");
 	switch(key){
 	case KEY_0:
-		disp_word(0, 15, 48);
+		disp_word(0, 20, 48);
 		break;
 	case KEY_1:
-		disp_word(0, 15, 49);
+		disp_word(0, 20, 49);
 		break;
 	case KEY_2:
-		disp_word(0, 15, 50);
+		disp_word(0, 20, 50);
 		break;
 	case KEY_3:
-		disp_word(0, 15, 51);
+		disp_word(0, 20, 51);
 		break;
 	case KEY_4:
-		disp_word(0, 15, 52);
+		disp_word(0, 20, 52);
 		break;
 	case KEY_5:
-		disp_word(0, 15, 53);
+		disp_word(0, 20, 53);
 		break;
 	case KEY_6:
-		disp_word(0, 15, 54);
+		disp_word(0, 20, 54);
 		break;
 	case KEY_7:
-		disp_word(0, 15, 55);
+		disp_word(0, 20, 55);
 		break;
 	case KEY_8:
-		disp_word(0, 15, 56);
+		disp_word(0, 20, 56);
 		break;
 	case KEY_9:
-		disp_word(0, 15, 57);
+		disp_word(0, 20, 57);
 		break;
 	default:
-		disp_word(0, 15, '-');
+		disp_word(0, 20, '-');
 		break;
 	}
 }
@@ -218,8 +180,10 @@ __interrupt void TIMER0_A1_ISR(void)
 				  g_iIRValue = (int)(g_ulIrValueCache & 0x0000ffff);
 				  //g_iIRAddr = (int)((g_ulIrValueCache >> 16) & 0x0000ffff);
 				  g_iIRStatus = IR_WAITING;
-				  //JudgeAndDisplayKeys((char)(g_iIRValue >> 8));
 				  JudgeAndProc((char)(g_iIRValue >> 8));
+				  g_ulGetNum = (char)(g_iIRValue >> 8);
+				  g_ucGetNumFlag = 1;
+				  //JudgeAndDisplayKeys((char)(g_iIRValue >> 8));
 				  //DisplayIntInHex(g_iIRValue, 5, 1);
 				  //DisplayIntInHex(g_iIRAddr, 5, 8);
 			  }

@@ -15,11 +15,12 @@
 #include <stdint.h>
 
 void usr_delay();
+void usr_delay_fi();
 void i2c_start();
 void i2c_stop();
 unsigned char i2c_read();
 void i2c_HS(void);
-void i2c_write(unsigned char write_data);
+int  i2c_write(unsigned char write_data);
 void i2c_write_to_addr(unsigned char addr, unsigned char WDataH, unsigned char WDataL);
 int i2c_read_by_addr(unsigned char addr);
 
